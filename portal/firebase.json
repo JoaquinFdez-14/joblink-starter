@@ -1,11 +1,18 @@
 {
   "hosting": {
-    "public": "portal/templates",
+    "public": "static",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "https://joblink-tkm2.onrender.com"
+      }
     ]
   }
 }
+
 
