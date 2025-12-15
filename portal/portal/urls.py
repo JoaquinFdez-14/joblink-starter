@@ -3,6 +3,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),  # <--- usa el app core
+    path('', include('core.urls')),  # Ruta principal delegada al app core
 ]
-# Triggering redeploy on Render
+
