@@ -1,20 +1,32 @@
 """
 Settings base de Django para JobLink Portal.
-Nota: debes instalar Django en tu entorno:
-pip install django requests
-
-Luego:
-python manage.py migrate
-python manage.py runserver
 """
+
 import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ===========================
+# CONFIGURACIÓN GENERAL
+# ===========================
+
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'reemplazar-esta-clave-en-produccion')
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',') if os.getenv('DJANGO_ALLOWED_HOSTS') else []
+
+# En producción, Render NO define DJANGO_DEBUG, así que esto queda en False
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+
+# Hosts permitidos (Render + Firebase)
+ALLOWED_HOSTS = [
+    'joblink-tkm2.onrender.com',
+    'arcadea.web.app',
+    'localhost',
+    '127.0.0.1'
+]
+
+# ===========================
+# APLICACIONES
+# ===========================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,6 +38,10 @@ INSTALLED_APPS = [
 
     'core',
 ]
+
+# ===========================
+# MIDDLEWARE
+# ===========================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -39,10 +55,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'portal.urls'
 
+# ===========================
+# TEMPLATES
+# ===========================
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],  # Tu carpeta de templates personalizada
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -57,6 +77,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'portal.wsgi.application'
 
+# ===========================
+# BASE DE DATOS
+# ===========================
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -64,19 +88,41 @@ DATABASES = {
     }
 }
 
+# ===========================
+# VALIDADORES
+# ===========================
+
 AUTH_PASSWORD_VALIDATORS = []
+
+# ===========================
+# LOCALIZACIÓN
+# ===========================
 
 LANGUAGE_CODE = 'es-cl'
 TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
 
+# ===========================
+# ARCHIVOS ESTÁTICOS
+# ===========================
+
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# ==== Configuración de la API JobLink (Node.js) ====
-# Se pueden configurar desde variables de entorno en desarrollo/producción.
-API_BASE = os.getenv('API_BASE', "http://localhost:8080")   # URL donde corre tu API Node
-API_TOKEN = os.getenv('API_TOKEN', "secreto123")             # Debe coincidir con AUTH_TOKEN en el API
-# Lista de correos (comma-separated) que se mapearán a `is_staff=True` en Django
+
+# Para producción (Render)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Para desarrollo (si tienes carpeta static/)
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+] if (BASE_DIR / 'static').exists() else []
+
+# ===========================
+# CONFIG API NODE.JS
+# ===========================
+
+API_BASE = os.getenv('API_BASE', "http://localhost:8080")
+API_TOKEN = os.getenv('API_TOKEN', "secreto123")
 ADMIN_EMAILS = os.getenv('ADMIN_EMAILS', '')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
