@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'reemplazar-esta-clave-en-produccion')
 
 # En producción, Render NO define DJANGO_DEBUG, así que esto queda en False
-DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = True
 
 # Hosts permitidos (Render + Firebase)
 ALLOWED_HOSTS = [
@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'core',
+    # ✅ Corrección importante
+    'portal.core',
 ]
 
 # ===========================
@@ -62,7 +63,7 @@ ROOT_URLCONF = 'portal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Tu carpeta de templates personalizada
+        'DIRS': [BASE_DIR / 'portal' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,15 +108,15 @@ USE_TZ = True
 # ARCHIVOS ESTÁTICOS
 # ===========================
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Para producción (Render)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Para desarrollo (si tienes carpeta static/)
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-] if (BASE_DIR / 'static').exists() else []
+    BASE_DIR / 'portal' / 'static'
+]
 
 # ===========================
 # CONFIG API NODE.JS
@@ -126,3 +127,4 @@ API_TOKEN = os.getenv('API_TOKEN', "secreto123")
 ADMIN_EMAILS = os.getenv('ADMIN_EMAILS', '')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
