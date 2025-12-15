@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card bg-dark bg-opacity-75 shadow-lg text-light" data-aos="fade-up">
+  <div class="card-body" data-aos="fade-right">
+    <h2 class="mb-3">Personaliza tu empresa 🏢</h2>
+    <p class="text-muted">
+      Completa estos datos para publicar ofertas y recibir postulaciones relevantes.
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      <!-- Nombre empresa -->
+      <div class="mb-3">
+        <label class="form-label">Nombre de la empresa</label>
+        <input type="text" name="nombre_empresa" class="form-control" required value="{{ request.session.nombre_empresa|default:'' }}">
+      </div>
+      <!-- Área -->
+      <div class="mb-3">
+        <label class="form-label">Área principal</label>
+        <input type="text" name="area" class="form-control" required value="{{ request.session.area|default:'' }}">
+      </div>
+      <!-- Ubicación -->
+      <div class="mb-3">
+        <label class="form-label">Ubicación</label>
+        <input type="text" name="ubicacion" class="form-control" required value="{{ request.session.ubicacion|default:'' }}">
+      </div>
+      <!-- Tipo de prácticas -->
+      <div class="mb-3">
+        <label class="form-label">Tipo de prácticas que ofrece</label>
+        <select name="tipo_practica" class="form-select" required>
+          <option value="">Selecciona una opción</option>
+          <option value="remota" {% if request.session.tipo_practica == 'remota' %}selected{% endif %}>Remota</option>
+          <option value="hibrida" {% if request.session.tipo_practica == 'hibrida' %}selected{% endif %}>Híbrida</option>
+          <option value="presencial" {% if request.session.tipo_practica == 'presencial' %}selected{% endif %}>Presencial</option>
+        </select>
+      </div>
+      <button class="btn btn-success">Guardar y continuar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

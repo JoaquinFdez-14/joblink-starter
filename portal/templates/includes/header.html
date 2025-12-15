@@ -1,0 +1,62 @@
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary shadow-sm">
+  <div class="container">
+    <a class="navbar-brand logo-joblink d-flex align-items-center gap-2" href="{% url 'home' %}">
+      <i class="fa-solid fa-briefcase"></i> JOBLINK
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link menu-chip d-flex align-items-center gap-1" href="{% url 'ofertas_list' %}">
+            <i class="fa-solid fa-list"></i> Ofertas
+          </a>
+        </li>
+        {% if request.session.rol == 'estudiante' %}
+        <li class="nav-item">
+          <a class="nav-link menu-chip d-flex align-items-center gap-1" href="{% url 'postulaciones_list' %}">
+            <i class="fa-solid fa-file-lines"></i> Mis postulaciones
+          </a>
+        </li>
+        {% endif %}
+        {% if request.session.rol == 'empresa' %}
+        <li class="nav-item">
+          <a class="nav-link menu-chip d-flex align-items-center gap-1" href="{% url 'ofertas_create' %}">
+            <i class="fa-solid fa-plus"></i> Publicar oferta
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav">
+        {% if request.session.uid %}
+          <li class="nav-item">
+            <a class="nav-link menu-chip d-flex align-items-center gap-1" href="{% url 'perfil' %}">
+              <i class="fa-solid fa-user"></i> Perfil ({{ request.session.nombre }})
+            </a>
+          </li>
+          {% if request.user.is_authenticated and request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link menu-chip d-flex align-items-center gap-1" href="{% url 'admin_panel' %}">
+              <i class="fa-solid fa-gears"></i> Admin
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link menu-chip d-flex align-items-center gap-1" href="{% url 'logout' %}">
+              <i class="fa-solid fa-right-from-bracket"></i> Salir
+            </a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link menu-chip d-flex align-items-center gap-1" href="{% url 'login' %}">
+              <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

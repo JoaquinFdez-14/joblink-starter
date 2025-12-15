@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Panel de administración</h2>
+
+<h3>Usuarios</h3>
+<form method="post" action="{% url 'admin_upsert_user' %}" class="row g-2 mb-3">
+  {% csrf_token %}
+  <div class="col-md-3"><input name="uid" class="form-control" placeholder="UID" required></div>
+  <div class="col-md-3"><input name="nombre" class="form-control" placeholder="Nombre"></div>
+  <div class="col-md-2"><input name="email" class="form-control" placeholder="Email"></div>
+  <div class="col-md-2">
+    <select name="rol" class="form-select"><option value="estudiante">Estudiante</option><option value="empresa">Empresa</option></select>
+  </div>
+  <div class="col-md-2"><button class="btn btn-primary">Crear/Actualizar</button></div>
+</form>
+
+<table class="table table-sm table-striped">
+  <thead><tr><th>UID</th><th>Nombre</th><th>Email</th><th>Rol</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.uid }}</td>
+      <td>{{ u.nombre }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.rol }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay usuarios</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Ofertas</h3>
+<table class="table table-sm table-striped">
+  <thead><tr><th>ID</th><th>Título</th><th>Empresa</th><th>Acciones</th></tr></thead>
+  <tbody>
+    {% for o in ofertas %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.titulo }}</td>
+      <td>{{ o.empresaId }}</td>
+      <td>
+        <form method="post" action="{% url 'admin_delete_oferta' o.id %}" style="display:inline">{% csrf_token %}<button class="btn btn-sm btn-danger">Eliminar</button></form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay ofertas</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Postulaciones</h3>
+<table class="table table-sm table-striped">
+  <thead><tr><th>ID</th><th>Oferta</th><th>Estudiante</th><th>Acciones</th></tr></thead>
+  <tbody>
+    {% for p in postulaciones %}
+    <tr>
+      <td>{{ p.id }}</td>
+      <td>{{ p.ofertaId }}</td>
+      <td>{{ p.estudianteId }}</td>
+      <td>
+        <form method="post" action="{% url 'admin_delete_postulacion' p.id %}" style="display:inline">{% csrf_token %}<button class="btn btn-sm btn-danger">Eliminar</button></form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay postulaciones</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

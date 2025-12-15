@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">
+  {% if modo == "editar" %}Editar oferta{% else %}Nueva oferta{% endif %}
+</h2>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label class="form-label">Título</label>
+    <input
+      type="text"
+      name="titulo"
+      class="form-control"
+      value="{{ oferta.titulo|default_if_none:'' }}"
+      required
+    >
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <textarea
+      name="descripcion"
+      rows="4"
+      class="form-control"
+      required
+    >{{ oferta.descripcion|default_if_none:'' }}</textarea>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Carrera requerida</label>
+      <input
+        type="text"
+        name="carrera_requerida"
+        class="form-control"
+        value="{{ oferta.carrera_requerida|default_if_none:'' }}"
+      >
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Sede</label>
+      <input
+        type="text"
+        name="sede"
+        class="form-control"
+        value="{{ oferta.sede|default_if_none:'' }}"
+      >
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Tipo</label>
+      <input
+        type="text"
+        name="tipo"
+        class="form-control"
+        value="{{ oferta.tipo|default_if_none:'' }}"
+      >
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Estado</label>
+    <select name="estado" class="form-select">
+      <option value="activa" {% if oferta.estado == "activa" or not oferta.estado %}selected{% endif %}>
+        Activa
+      </option>
+      <option value="cerrada" {% if oferta.estado == "cerrada" %}selected{% endif %}>
+        Cerrada
+      </option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    {% if modo == "editar" %}Guardar cambios{% else %}Crear oferta{% endif %}
+  </button>
+  <a href="{% url 'ofertas_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

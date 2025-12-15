@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card p-4 mt-4" data-aos="fade-up">
+      <h3 class="mb-3">Ingresar</h3>
+
+      <p class="small text-muted mb-3">
+        Accede con tu correo y contraseña. Tu rol (estudiante o empresa) se
+        toma automáticamente desde tu perfil en JobLink.
+      </p>
+
+      <!-- LOGIN REAL CON FIREBASE -->
+      <form id="login-form">
+        <div class="mb-3">
+          <label class="form-label">Correo</label>
+          <input type="email" class="form-control" id="email"
+                 placeholder="tucorreo@ejemplo.com" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password"
+                 placeholder="Tu contraseña" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mb-2">Entrar</button>
+
+        <div class="d-flex justify-content-between small mt-2">
+          <a href="#" id="forgot-pass" class="text-light">¿Olvidaste tu contraseña?</a>
+          <a href="{% url 'usuarios_new' %}" class="text-warning">Crear cuenta</a>
+        </div>
+      </form>
+
+      <div id="login-error" class="alert alert-danger mt-3 d-none small"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase compat (CDN) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="{% static 'firebase-init.js' %}"></script>
+<script src="{% static 'firebase-auth.js' %}"></script>
+<script>
+  async function onSubmitLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const btn = document.querySelector("#login-form button[type='submit']");
+    const errBox = document.getElementById("login-error");
+    errBox.textContent = "";
+    errBox.classList.add("d-none");
+    btn.disabled = true;
+    btn.textContent = "Entrando...";
+    try {
+      await joblinkLogin(email, password);
+    } catch (err) {
+      errBox.textContent = err.message || "Error al iniciar sesión";
+      errBox.classList.remove("d-none");
+      btn.disabled = false;
+      btn.textContent = "Entrar";
+    }
+  }
+  document.getElementById("login-form").onsubmit = onSubmitLogin;
+</script>
+{% endblock %}

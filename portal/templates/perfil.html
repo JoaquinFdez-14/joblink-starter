@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<main class="container">
+  <div class="profile-container mx-auto" style="max-width:900px;">
+    <!-- Compact header with avatar and key stats -->
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <img src="{% static 'img/peter-gargiulo-cGNCepznaV8-unsplash.jpg' %}" alt="avatar" class="rounded-circle" style="width:72px;height:72px;object-fit:cover;">
+      <div>
+        <h3 class="mb-0">{% if usuario.nombre %}{{ usuario.nombre }}{% else %}{{ nombre }}{% endif %}</h3>
+        <div class="text-muted small">{{ rol|title }} • {% if usuario.carrera %}{{ usuario.carrera }}{% else %}-{% endif %}</div>
+      </div>
+      <div class="ms-auto text-end">
+        <a class="btn btn-primary btn-sm" href="{% url 'usuarios_new' %}">Editar perfil</a>
+      </div>
+    </div>
+
+    <!-- Two columns compact: left personal / prefs, right resumen (collapsed) -->
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card p-2 mb-2">
+          <div class="small text-muted">Contacto</div>
+          <div class="fw-bold">{% if usuario.email %}{{ usuario.email }}{% else %}-{% endif %}</div>
+        </div>
+        <div class="card p-2 mb-2">
+          <div class="small text-muted">Institución</div>
+          <div class="fw-bold">{% if usuario.institucion %}{{ usuario.institucion }}{% else %}-{% endif %}</div>
+        </div>
+        <div class="card p-2 mb-2">
+          <div class="small text-muted">Carrera</div>
+          <div class="fw-bold">{% if usuario.carrera %}{{ usuario.carrera }}{% else %}-{% endif %}</div>
+          <div class="text-muted small">{% if usuario.sede %}{{ usuario.sede }}{% endif %}</div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card p-2 mb-2">
+          <div class="small text-muted">Resumen profesional</div>
+          <div class="mt-1">{% if usuario.resumen %}{{ usuario.resumen }}{% else %}<span class="text-muted">No hay resumen aún.</span>{% endif %}</div>
+        </div>
+
+        <div class="card p-2 mb-2">
+          <div class="small text-muted">Últimas postulaciones</div>
+          <div class="mt-1">
+            {% if postulaciones %}
+              <ul class="list-unstyled small mb-0">
+                {% for p in postulaciones|slice:":5" %}
+                  <li class="mb-1">{% if p.ofertaId %}<a href="{% url 'ofertas_detail' p.ofertaId %}" class="link-light small">{{ p.ofertaId }}</a>{% else %}{{ p.id }}{% endif %} — <span class="text-muted">{{ p.estado|default:"enviada" }}</span></li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <div class="text-muted small">No has realizado postulaciones todavía.</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+{% endblock %}
+        <h2 class="accordion-header" id="headingPostulaciones">

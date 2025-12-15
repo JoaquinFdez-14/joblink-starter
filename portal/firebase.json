@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "public": "portal/templates",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
+

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Eliminar oferta</h2>
+<p>
+  ¿Seguro que quieres eliminar la oferta
+  <strong>{{ oferta.titulo }}</strong>?
+</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+  <a href="{% url 'ofertas_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

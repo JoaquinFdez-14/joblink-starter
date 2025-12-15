@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card bg-dark text-light border-secondary shadow-sm mb-3" data-aos="fade-up">
+      <div class="card-body" data-aos="fade-right">
+        <h3 class="card-title">{{ oferta.titulo }}</h3>
+        <p class="text-muted mb-1">
+          {{ oferta.carrera_requerida }} · {{ oferta.sede }}
+        </p>
+        <p class="mb-1"><strong>Tipo:</strong> {{ oferta.tipo }}</p>
+        <p class="mb-3"><strong>Estado:</strong> {{ oferta.estado }}</p>
+
+        <h5>Descripción</h5>
+        <p>{{ oferta.descripcion }}</p>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2" data-aos="fade-up" data-aos-delay="80">
+      {% if request.session.rol == "estudiante" %}
+        <form method="post" action="{% url 'postular' oferta.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">
+            Postular a esta oferta
+          </button>
+        </form>
+      {% endif %}
+      <a href="{% url 'ofertas_list' %}" class="btn btn-secondary">
+        Volver
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

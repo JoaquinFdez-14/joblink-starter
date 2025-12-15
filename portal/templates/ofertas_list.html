@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0">Ofertas de práctica</h2>
+  {% if request.session.rol == "empresa" %}
+    <a href="{% url 'ofertas_create' %}" class="btn btn-primary btn-sm">
+      + Nueva oferta
+    </a>
+  {% endif %}
+</div>
+
+<!-- Filtros de búsqueda -->
+<form method="get" class="row g-2 mb-4 bg-dark p-3 rounded shadow-sm align-items-end">
+  <div class="col-md-4">
+    <label for="region" class="form-label">Región</label>
+    <select id="region" name="region" class="form-select">
+      <option value="">Todas</option>
+      <option value="Arica y Parinacota">Arica y Parinacota</option>
+      <option value="Tarapacá">Tarapacá</option>
+      <option value="Antofagasta">Antofagasta</option>
+      <option value="Atacama">Atacama</option>
+      <option value="Coquimbo">Coquimbo</option>
+      <option value="Valparaíso">Valparaíso</option>
+      <option value="Metropolitana">Metropolitana</option>
+      <option value="O'Higgins">O'Higgins</option>
+      <option value="Maule">Maule</option>
+      <option value="Ñuble">Ñuble</option>
+      <option value="Biobío">Biobío</option>
+      <option value="La Araucanía">La Araucanía</option>
+      <option value="Los Ríos">Los Ríos</option>
+      <option value="Los Lagos">Los Lagos</option>
+      <option value="Aysén">Aysén</option>
+      <option value="Magallanes">Magallanes</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label for="carrera" class="form-label">Carrera</label>
+    <select id="carrera" name="carrera" class="form-select">
+      <option value="">Todas</option>
+      <option value="Ingeniería Civil Informática">Ingeniería Civil Informática</option>
+      <option value="Ingeniería Comercial">Ingeniería Comercial</option>
+      <option value="Ingeniería Civil Industrial">Ingeniería Civil Industrial</option>
+      <option value="Psicología">Psicología</option>
+      <option value="Derecho">Derecho</option>
+      <option value="Enfermería">Enfermería</option>
+      <option value="Medicina">Medicina</option>
+      <option value="Arquitectura">Arquitectura</option>
+      <option value="Contador Auditor">Contador Auditor</option>
+      <option value="Periodismo">Periodismo</option>
+      <option value="Trabajo Social">Trabajo Social</option>
+      <option value="Ingeniería en Construcción">Ingeniería en Construcción</option>
+      <option value="Ingeniería Eléctrica">Ingeniería Eléctrica</option>
+      <option value="Ingeniería Mecánica">Ingeniería Mecánica</option>
+      <option value="Ingeniería Química">Ingeniería Química</option>
+      <option value="Ingeniería Ambiental">Ingeniería Ambiental</option>
+      <option value="Educación Básica">Educación Básica</option>
+      <option value="Educación Parvularia">Educación Parvularia</option>
+      <option value="Otra">Otra</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <button type="submit" class="btn btn-outline-light w-100">
+      <i class="fa fa-filter"></i> Filtrar
+    </button>
+  </div>
+</form>
+
+{% if ofertas %}
+  <div class="row g-3">
+    {% for o in ofertas %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up">
+        <div class="card bg-dark text-light h-100 border-secondary shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ o.titulo }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              {{ o.carrera_requerida }} · {{ o.sede }}
+            </h6>
+            <p class="card-text flex-grow-1">
+              {{ o.descripcion|truncatechars:120 }}
+            </p>
+
+            {% if o.tipo %}
+              <span class="badge bg-success mb-2 text-uppercase small">
+                {{ o.tipo }}
+              </span>
+            {% endif %}
+
+            <div class="d-flex justify-content-between mt-2">
+              <a href="{% url 'ofertas_detail' o.id %}" class="btn btn-outline-light btn-sm">
+                Ver detalle
+              </a>
+
+              {% if request.session.rol == "empresa" and request.session.uid == o.empresaId %}
+                <div class="btn-group">
+                  <a href="{% url 'ofertas_edit' o.id %}" class="btn btn-outline-warning btn-sm">
+                    Editar
+                  </a>
+                  <a href="{% url 'ofertas_delete' o.id %}" class="btn btn-outline-danger btn-sm">
+                    Eliminar
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No hay ofertas por ahora.</p>
+{% endif %}
+
+{% endblock %}

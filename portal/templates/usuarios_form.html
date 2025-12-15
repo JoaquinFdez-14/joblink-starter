@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h2>Editar perfil</h2>
+
+<form id="formUsuario" onsubmit="guardarUsuario(event)">
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">UID</label>
+      <input id="uid" name="uid" class="form-control" required placeholder="est1" value="{{ usuario_api.uid|default:uid }}">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Nombre{% if rol == 'empresa' %} de la empresa{% endif %}</label>
+      <input id="nombre" name="nombre" class="form-control" placeholder="{% if rol == 'empresa' %}Empresa S.A.{% else %}Juan Pérez{% endif %}" value="{{ usuario_api.nombre|default:nombre }}">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Email</label>
+      <input id="email" name="email" class="form-control" placeholder="tucorreo@ejemplo.com" value="{{ usuario_api.email|default:'' }}">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Rol</label>
+      <select id="rol" name="rol" class="form-select" required onchange="mostrarCamposPorRol()">
+        <option value="">-- Selecciona --</option>
+        <option value="estudiante" {% if usuario_api.rol == 'estudiante' or rol == 'estudiante' %}selected{% endif %}>Estudiante</option>
+        <option value="empresa" {% if usuario_api.rol == 'empresa' or rol == 'empresa' %}selected{% endif %}>Empresa</option>
+      </select>
+    </div>
+
+    {# Solo mostrar campos de estudiante si el rol es estudiante #}
+    <div id="campos-estudiante" style="display: {% if usuario_api.rol == 'estudiante' or rol == 'estudiante' %}block{% else %}none{% endif %};">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Carrera</label>
+        <select id="carrera" name="carrera" class="form-select">
+          <option value="">-- Selecciona --</option>
+          {% for c in carreras_opciones %}
+            <option value="{{ c }}" {% if usuario_api.carrera == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Sede</label>
+        <select id="sede" name="sede" class="form-select">
+          <option value="">-- Selecciona --</option>
+          {% for s in sedes_opciones %}
+            <option value="{{ s }}" {% if usuario_api.sede == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Institución</label>
+        <select id="institucion" name="institucion" class="form-select">
+          <option value="">-- Selecciona --</option>
+          {% for i in instituciones_opciones %}
+            <option value="{{ i }}" {% if usuario_api.institucion == i %}selected{% endif %}>{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 mb-3">
+        <label class="form-label">Resumen profesional</label>
+        <textarea id="resumen" name="resumen" class="form-control" rows="4">{{ usuario_api.resumen|default:'' }}</textarea>
+      </div>
+      <div class="col-12 mb-3">
+        <label class="form-label">Intereses / Skills (separa por comas)</label>
+        <input id="intereses" name="intereses" class="form-control" placeholder="Python, SQL, Django" value="{% if usuario_api.intereses %}{{ usuario_api.intereses|join:", " }}{% endif %}">
+      </div>
+    </div>
+
+    {# Solo mostrar campos de empresa si el rol es empresa #}
+    <div id="campos-empresa" style="display: {% if usuario_api.rol == 'empresa' or rol == 'empresa' %}block{% else %}none{% endif %};">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Área principal</label>
+        <input id="area" name="area" class="form-control" placeholder="Ej: Tecnología, Recursos Humanos" value="{{ usuario_api.area|default:'' }}">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Ubicación</label>
+        <input id="ubicacion" name="ubicacion" class="form-control" placeholder="Ciudad, País" value="{{ usuario_api.ubicacion|default:'' }}">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Tipo de prácticas que ofrece</label>
+        <select id="tipo_practica" name="tipo_practica" class="form-select">
+          <option value="">Selecciona una opción</option>
+          <option value="remota" {% if usuario_api.tipo_practica == 'remota' %}selected{% endif %}>Remota</option>
+          <option value="hibrida" {% if usuario_api.tipo_practica == 'hibrida' %}selected{% endif %}>Híbrida</option>
+          <option value="presencial" {% if usuario_api.tipo_practica == 'presencial' %}selected{% endif %}>Presencial</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-success">Guardar</button>
+  <a class="btn btn-secondary" href="{% url 'perfil' %}">Cancelar</a>
+</form>
+
+<script type="module">
+import { auth } from '/static/firebase.js';
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+const API = 'http://localhost:8080';
+
+window.mostrarCamposPorRol = function() {
+  var rol = document.getElementById('rol').value;
+  document.getElementById('campos-estudiante').style.display = (rol === 'estudiante') ? 'block' : 'none';
+  document.getElementById('campos-empresa').style.display = (rol === 'empresa') ? 'block' : 'none';
+};
+window.onload = function() {
+  window.mostrarCamposPorRol();
+};
+
+window.guardarUsuario = async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const nombre = document.getElementById('nombre').value.trim();
+  const rol = document.getElementById('rol').value;
+  let payload = { email, nombre, rol };
+  if (rol === 'estudiante') {
+    const carrera = document.getElementById('carrera').value;
+    const sede = document.getElementById('sede').value;
+    const institucion = document.getElementById('institucion').value;
+    const resumen = document.getElementById('resumen').value.trim();
+    const interesesRaw = document.getElementById('intereses').value.trim();
+    const intereses = interesesRaw ? interesesRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+    payload.carrera = carrera;
+    payload.sede = sede;
+    payload.institucion = institucion;
+    payload.resumen = resumen;
+    payload.intereses = intereses;
+  } else if (rol === 'empresa') {
+    const area = document.getElementById('area').value;
+    const ubicacion = document.getElementById('ubicacion').value;
+    const tipo_practica = document.getElementById('tipo_practica').value;
+    payload.area = area;
+    payload.ubicacion = ubicacion;
+    payload.tipo_practica = tipo_practica;
+  }
+  // Si es registro, aquí iría la lógica de createUserWithEmailAndPassword y password
+  // Si es edición, solo enviar el payload al backend (PUT/PATCH según tu API)
+  try {
+    // Aquí deberías usar PUT o PATCH si es edición, y POST solo para registro
+    const resp = await fetch(`${API}/api/usuarios`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!resp.ok) throw new Error('Error al guardar perfil');
+    alert('Perfil actualizado correctamente.');
+    window.location.href = "{% url 'perfil' %}";
+  } catch (err) {
+    alert('Error al guardar perfil: ' + (err.message || err));
+  }
+}
+</script>
+
+{% endblock %}

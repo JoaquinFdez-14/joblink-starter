@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="row align-items-start gx-4">
+    <div class="col-12 mb-3">
+      <div class="card p-3 profile-main-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            {# TÍTULO: genérico si no hay sesión #}
+            {% if usuario.uid %}
+              <h3 class="mb-0">Hola, {{ usuario.nombre }} 👋</h3>
+              <p class="small text-muted mb-0">
+                Bienvenido a JobLink — aquí están las oportunidades y tu actividad reciente.
+              </p>
+            {% else %}
+              <h3 class="mb-0">Bienvenido a JobLink 👋</h3>
+              <p class="small text-muted mb-0">
+                Encuentra prácticas y oportunidades laborales según tu carrera e intereses.
+              </p>
+            {% endif %}
+          </div>
+
+          {# BOTÓN DERECHA: solo si hay sesión #}
+          <div>
+            {% if usuario.uid %}
+              <a href="{% url 'perfil' %}" class="btn btn-outline-light">Ver perfil</a>
+            {% else %}
+              <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if usuario.uid %}
+        <div class="mt-3">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <span class="fw-bold">Perfil de empleabilidad</span>
+            <span class="small">{{ empleabilidad }}%</span>
+          </div>
+          <div class="progress mb-2" style="height: 18px;">
+            {% if empleabilidad|default:0 < 40 %}
+              <div class="progress-bar bg-danger" role="progressbar" style="width: {{ empleabilidad|default:0 }}%;" aria-valuenow="{{ empleabilidad|default:0 }}" aria-valuemin="0" aria-valuemax="100">
+                {{ empleabilidad|default:0 }}%
+              </div>
+            {% elif empleabilidad|default:0 < 80 %}
+              <div class="progress-bar bg-warning text-dark" role="progressbar" style="width: {{ empleabilidad|default:0 }}%;" aria-valuenow="{{ empleabilidad|default:0 }}" aria-valuemin="0" aria-valuemax="100">
+                {{ empleabilidad|default:0 }}%
+              </div>
+            {% else %}
+              <div class="progress-bar bg-success" role="progressbar" style="width: {{ empleabilidad|default:0 }}%;" aria-valuenow="{{ empleabilidad|default:0 }}" aria-valuemin="0" aria-valuemax="100">
+                {{ empleabilidad|default:0 }}%
+              </div>
+            {% endif %}
+          </div>
+          {% if perfil_completo %}
+            <div class="alert alert-success py-1 px-2 mb-2 small d-inline-block">Perfil completo ✅</div>
+          {% endif %}
+          {% if checklist %}
+            <div class="mt-2">
+              <span class="fw-bold small">¿Qué te falta para mejorar?</span>
+              <ul class="mb-0 small">
+                {% for item in checklist %}
+                  <li>❌ {{ item }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      {# BUSCADOR SIEMPRE DISPONIBLE #}
+      <div class="card p-2">
+        <form action="{% url 'ofertas_list' %}" method="get" class="d-flex gap-2">
+          <input name="q" class="form-control" placeholder="Buscar ofertas, título o empresa" />
+          <button class="btn btn-primary">Buscar</button>
+        </form>
+      </div>
+
+      {% if usuario.rol == 'empresa' %}
+      <div class="mt-3">
+        <h5 class="mb-2">Mis ofertas publicadas</h5>
+        <div class="row home-offers">
+          {% for o in ofertas_empresa %}
+            <div class="col-12 mb-2">
+              <a href="{% url 'ofertas_detail' o.id %}" class="text-decoration-none">
+                <div class="card p-2 home-offer">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong class="d-block text-truncate">{{ o.titulo }}</strong>
+                      <div class="small text-muted">{{ o.sede }} | {{ o.estado|default:'Activa' }}</div>
+                    </div>
+                    <div class="text-end small">
+                      <span class="badge bg-secondary">{{ o.postulaciones|length|default:0 }} postulaciones</span>
+                    </div>
+                  </div>
+                  <p class="small text-truncate mb-0">{{ o.descripcion }}</p>
+                </div>
+              </a>
+            </div>
+          {% empty %}
+            <div class="col-12">
+              <div class="card p-2">
+                <div class="small text-muted">No has publicado ofertas aún.</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="mt-2">
+        <h5 class="mb-2">Ofertas destacadas</h5>
+        <div class="row home-offers">
+          {% for o in ofertas_destacadas %}
+            <div class="col-sm-6 col-lg-6">
+              <a href="{% url 'ofertas_detail' o.id %}" class="text-decoration-none">
+                <div class="card p-2 home-offer">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <strong class="d-block text-truncate">{{ o.titulo }}</strong>
+                      <div class="small text-muted">
+                        {% if o.empresa %}{{ o.empresa }}{% else %}{{ o.empresaId }}{% endif %}
+                      </div>
+                    </div>
+                    <div class="text-end small text-muted">{{ o.sede }}</div>
+                  </div>
+                  <p class="small text-truncate mb-0">{{ o.descripcion }}</p>
+                </div>
+              </a>
+            </div>
+          {% empty %}
+            <div class="col-12">
+              <div class="card p-2">
+                <div class="small text-muted">No hay ofertas destacadas.</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      {# ACCIONES RÁPIDAS: cambian según si hay sesión o no #}
+      <div class="card p-2">
+        <h6 class="mb-2">Acciones rápidas</h6>
+        <div class="d-grid gap-2 home-quick-actions">
+          {% if usuario.uid %}
+            {# Usuario con sesión #}
+            {% if usuario.rol == 'empresa' %}
+              <a href="{% url 'ofertas_create' %}" class="btn btn-outline-light">Publicar oferta</a>
+            {% endif %}
+            <a href="{% url 'usuarios_new' %}" class="btn btn-outline-light">Editar usuario</a>
+            {% if usuario.rol == 'estudiante' %}
+              <a href="{% url 'postulaciones_list' %}" class="btn btn-outline-light">Mis postulaciones</a>
+            {% endif %}
+          {% else %}
+            {# Visitante (sin sesión) #}
+            <a href="{% url 'login' %}" class="btn btn-outline-light">Iniciar sesión</a>
+            <a href="{% url 'usuarios_new' %}" class="btn btn-outline-light">Crear cuenta</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {# POSTULACIONES RECIENTES: solo tiene sentido si hay sesión #}
+      <div class="mt-2">
+        <h6 class="mb-2">Tus postulaciones recientes</h6>
+
+        {% if usuario.uid and postulaciones_recientes %}
+          {% for p in postulaciones_recientes %}
+            <div class="card p-2 mb-1">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <div class="small">
+                    <strong>
+                      {% if p.oferta and p.oferta.titulo %}
+                        <a class="link-light" href="{% url 'ofertas_detail' p.oferta.id %}">{{ p.oferta.titulo }}</a>
+                      {% else %}
+                        {{ p.ofertaId }}
+                      {% endif %}
+                    </strong>
+                  </div>
+                  <div class="small text-muted">Estado: {{ p.estado }}</div>
+                </div>
+                <div class="small text-muted">{{ p.createdAt }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        {% elif usuario.uid %}
+          <div class="card p-2">
+            <div class="small text-muted">Sin postulaciones recientes.</div>
+          </div>
+        {% else %}
+          <div class="card p-2">
+            <div class="small text-muted">Inicia sesión para ver tus postulaciones.</div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

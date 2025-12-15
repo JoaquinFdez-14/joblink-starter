@@ -1,0 +1,468 @@
+html, body {
+    height: 100%;
+}
+
+/* ================================
+   PALETA Y VARIABLES GENERALES
+   ================================ */
+:root{
+    /* Paleta Oscuro Moderno */
+    --bg-image: url("/static/img/adrien-olichon-RCAhiGJsUUE-unsplash.jpg");
+    --bg-color: #0b0f12; /* base oscuro */
+    --bg-overlay: linear-gradient(180deg, rgba(6,8,10,0.6), rgba(12,14,16,0.75));
+    --surface: rgba(18,22,25,0.6);
+    --surface-2: rgba(28,34,39,0.6);
+    --text: #e6eef6;
+    --muted: #99a3b2;
+    --accent: #b5a045; /* acento dorado */
+    --accent-2: #ffd166;
+    --glass-border: rgba(255,255,255,0.04);
+    --radius: 12px;
+    --transition: 180ms ease;
+}
+
+/* Fondo general */
+.app-body{
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: var(--bg-color);
+    color: var(--text);
+}
+
+/* ================================
+   SUPERFICIES (CARDS, PANELS)
+   ================================ */
+.card, .box, .panel{
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.55));
+    backdrop-filter: blur(8px) saturate(120%);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    color: var(--text);
+}
+
+.card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(2,6,10,0.45);
+    border-color: rgba(255,255,255,0.08);
+}
+
+/* Typography helpers */
+h1,h2,h3,h4{
+    color: var(--text);
+}
+
+p, label, input, select, textarea{
+    color: var(--text);
+}
+
+/* ================================
+   INPUTS
+   ================================ */
+input.form-control,
+textarea.form-control,
+select.form-select{
+    background: rgba(0,0,0,0.65);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+}
+
+input.form-control::placeholder,
+textarea.form-control::placeholder{
+    color: var(--muted);
+}
+
+/* Loader overlay styles */
+.site-loader{
+    position: fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(3,6,8,0.6);
+    z-index:1050;
+}
+
+/* ================================
+   BOTONES
+   ================================ */
+.btn-primary{
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    backdrop-filter: blur(8px) saturate(120%);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    color: #071029;
+}
+.btn-primary:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(2,6,10,0.45);
+}
+
+.btn-outline-light{
+    border-color: rgba(255,255,255,0.18);
+    color: var(--text);
+}
+
+.btn-outline-light:hover{
+    background: rgba(255,255,255,0.06);
+}
+
+/* Button pressed state */
+.btn.pressed{
+    transform: translateY(1px) scale(0.995);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.35) inset;
+}
+
+/* ================================
+   LOGO JOBLINK
+   ================================ */
+.logo-joblink{
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: 0.25em;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:1.15rem;
+    padding:0.35rem 1.25rem;
+    border-radius:999px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));
+    color: var(--text) !important;
+    border: 1px solid rgba(255,255,255,0.035);
+}
+.logo-joblink:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 22px 46px rgba(2,6,10,0.6);
+}
+
+/* ================================
+   CHIPS DEL MENÚ
+   ================================ */
+.menu-chip{
+    background: rgba(255,255,255,0.03);
+    color: var(--text) !important;
+    padding:6px 14px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.04);
+}
+.menu-chip:hover{
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.04));
+    transform: translateY(-1.5px);
+}
+
+/* Badges */
+.badge{
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+}
+
+/* ================================
+   PERFIL
+   ================================ */
+.profile-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.55));
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.profile-avatar img{
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+.profile-stats .h5{
+    color: #fff;
+}
+
+.skill-badge{
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 0.45rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+}
+
+/* Header de card */
+.card-header{
+    background: linear-gradient(90deg, rgba(181,160,69,0.18), rgba(150,120,20,0.12));
+}
+
+/* Improve table readability on profile */
+.table-dark th,
+.table-dark td{
+    border-top: 0;
+    vertical-align: middle;
+}
+
+@media (max-width: 767px){
+    .profile-avatar img { width: 90px; height: 90px; }
+}
+
+/* Main container width to avoid extremely wide layouts on large screens */
+main.container{
+    max-width: 1120px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Make profile cards compact and aligned */
+.profile-card{
+    padding: 0; /* card body controls spacing */
+}
+.profile-card .card-body{
+    padding: 0.6rem 1rem;
+}
+
+/* Ensure tables inside profile are responsive */
+.profile-card .table-responsive{
+    margin-top: 0.25rem;
+}
+
+/* Reduce overall card padding a bit for profile layout */
+.card{
+    padding: 0;
+    margin-bottom: 0.75rem;
+}
+.card > .card-header{
+    padding: 0.48rem 1rem;
+    font-size: 0.95rem;
+}
+.card > .card-body{
+    padding: 0.6rem 1rem;
+}
+
+/* Reduce excessive shadow for hovered cards to keep page stable */
+.card:hover{
+    box-shadow: 0 18px 36px rgba(2,6,10,0.36);
+}
+
+/* Profile main card (centered) */
+.profile-main-card{
+    max-width: 980px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: linear-gradient(180deg, rgba(10,12,14,0.7), rgba(16,20,24,0.85));
+    color: var(--text);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    overflow: visible;
+    padding: 0.4rem;
+}
+.profile-main-card .card-header{
+    background: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding: 0.6rem 1rem;
+}
+
+.edit-profile-btn{
+    margin-left: 0.5rem;
+}
+
+/* Compact navbar */
+.navbar{
+    padding-top: 0.28rem;
+    padding-bottom: 0.28rem;
+}
+.navbar .logo-joblink{
+    padding: 0.2rem 0.9rem;
+    font-size: 1rem;
+}
+
+/* Small screens: show edit button below header title */
+@media (max-width: 767px){
+    .edit-profile-btn.d-none.d-md-inline{ display: none !important; }
+    .edit-profile-btn-mobile{ display: inline-block; margin-top: 0.5rem; }
+}
+
+/* Compact profile top row */
+.profile-top-row{
+    gap: 1rem;
+    align-items: center;
+}
+.profile-top-row .profile-avatar img{
+    width: 72px;
+    height: 72px;
+}
+.profile-top-row h4{
+    font-size: 1.05rem;
+    margin-bottom: 0;
+}
+.profile-top-row .small{
+    font-size: 0.78rem;
+}
+
+/* Accordion tweaks to make it compact */
+.accordion-button{
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+}
+.accordion-body{
+    padding: 0.5rem 0.8rem;
+}
+
+/* Ensure card body doesn't expand to full page height */
+.profile-main-card .card-body{
+    min-height: 0;
+}
+
+/* Reduce outer margins to help fit view */
+.profile-main-card.mx-auto.my-3{
+    margin-top: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+/* Compact profile container cards */
+.profile-container .card{
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.03);
+}
+.profile-container .card .small{
+    color: var(--muted);
+}
+.profile-container .card p,
+.profile-container .card div{
+    color: var(--text);
+}
+.profile-container a.link-light{
+    color: var(--accent-2);
+    text-decoration: underline;
+}
+
+/* ================================
+   HOME / DASHBOARD
+   ================================ */
+.home-offers .home-offer{
+    padding:0.55rem;
+    border-radius:10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.7));
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.home-offer .text-truncate{
+    max-width: 220px;
+    display:block;
+}
+.home-offer p.small{
+    margin-bottom:0;
+    color:var(--muted);
+}
+.home-hero{
+    padding:0.6rem 0.8rem;
+}
+.home-quick-actions .btn{
+    width:100%;
+    text-align:left;
+}
+
+/* ================================
+   REGLAS DE CONTRASTE (LO IMPORTANTE)
+   ================================ */
+
+/* Todas las utilidades de texto de Bootstrap adaptadas a tema dark */
+.text-muted,
+.text-secondary,
+.small{
+    color: var(--muted) !important;
+}
+
+/* Cualquier "text-dark" que venga de Bootstrap lo forzamos a claro */
+.text-dark{
+    color: var(--text) !important;
+}
+
+/* Texto dentro de cards y secciones principales siempre legible */
+.card *,
+.profile-card *,
+.profile-container .card *,
+.profile-main-card *,
+.profile-main-card * ,
+.home-offers .home-offer *,
+.home-quick-actions *,
+.home-quick-actions .btn *,
+.home-recent-apps *,
+.home-recent-apps .card *{
+    color: var(--text) !important;
+}
+
+/* Links dentro de cards (ofertas, acciones, etc.) */
+.card a,
+.profile-card a,
+.profile-container .card a,
+.home-offers .home-offer a{
+    color: var(--accent-2) !important;
+    text-decoration: none;
+}
+.card a:hover,
+.profile-card a:hover,
+.profile-container .card a:hover,
+.home-offers .home-offer a:hover{
+    text-decoration: underline;
+}
+
+/* Ajuste tamaño contenedor en desktop */
+@media (min-width: 992px){
+    main.container{
+        max-width: 980px;
+    }
+}
+/* ===== FIX FINAL DE CONTRASTE EN TODAS LAS CARDS ===== */
+
+/* Todo texto dentro de cualquier .card bien claro */
+.card p,
+.card small,
+.card span,
+.card div,
+.card li,
+.card a,
+.card h1,
+.card h2,
+.card h3,
+.card h4,
+.card h5,
+.card h6 {
+    color: #fdfdfd !important;
+    opacity: 1 !important;
+}
+
+/* Por si usan utilidades de Bootstrap de texto apagado */
+.text-muted,
+.text-secondary,
+.text-white-50,
+.text-body-secondary {
+    color: #dfe6f3 !important;
+    opacity: 1 !important;
+}
+
+/* Las cards del perfil un pelín más claras */
+.profile-card,
+.profile-container .card {
+    background: rgba(0,0,0,0.7) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+}
+/* ===== ARREGLO ESPECÍFICO PARA /perfil/ ===== */
+
+/* Fondo un poco más claro en las cards del perfil */
+.profile-container .card {
+    background: rgba(0,0,0,0.75) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* Todo el texto dentro de las cards del perfil bien visible */
+.profile-container .card .text-muted,
+.profile-container .card .small,
+.profile-container .card .fw-bold,
+.profile-container .card span,
+.profile-container .card div {
+    color: #fdfdfd !important;
+    opacity: 1 !important;
+}
+
+/* En particular: los textos que pones como text-muted */
+.profile-container .card .text-muted.small,
+.profile-container .card .text-muted span {
+    color: #dfe6f3 !important;
+}

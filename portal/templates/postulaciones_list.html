@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-3">Mis postulaciones</h2>
+
+{% if postulaciones_det %}
+  <div data-aos="fade-up">
+  <table class="table table-dark table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Oferta</th>
+        <th>Carrera</th>
+        <th>Sede</th>
+        <th>Estado postulación</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in postulaciones_det %}
+        {% with p=item.postulacion o=item.oferta %}
+          <tr>
+            <td>
+              {% if o %}
+                <a href="{% url 'ofertas_detail' o.id %}" class="link-light text-decoration-underline">
+                  {{ o.titulo }}
+                </a>
+              {% else %}
+                {{ p.ofertaId }}
+              {% endif %}
+            </td>
+            <td>{% if o %}{{ o.carrera_requerida }}{% endif %}</td>
+            <td>{% if o %}{{ o.sede }}{% endif %}</td>
+            <td>{{ p.estado|default:"enviada" }}</td>
+            <td>{{ p.fecha|default:"-" }}</td>
+          </tr>
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+{% else %}
+  <p>No tienes postulaciones aún.</p>
+{% endif %}
+
+{% endblock %}

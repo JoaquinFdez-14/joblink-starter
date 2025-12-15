@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Nueva postulación</h1>
+
+<label>Oferta</label>
+<select id="selOferta"></select>
+
+<button onclick="postular()">Postular</button>
+
+<script>
+const API_BASE = "{{ API_BASE }}";
+const AUTH_TOKEN = "{{ AUTH_TOKEN }}";
+const UID = "{{ uid }}";
+
+async function cargarOfertas() {
+  const r = await fetch(`${API_BASE}/ofertas`);
+  const ofertas = await r.json();
+  const sel = document.getElementById('selOferta');
+  sel.innerHTML = '';
+  ofertas.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o.id;
+    opt.textContent = `${o.titulo} — ${o.empresaId ?? ''}`;
+    sel.appendChild(opt);
+  });
+}
+
+async function postular() {
+  const ofertaId = document.getElementById('selOferta').value;
+  if (!ofertaId) return alert("Selecciona una oferta");
+  const res = await fetch(`${API_BASE}/postulaciones`, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'x-auth-token': AUTH_TOKEN },
+    body: JSON.stringify({ ofertaId, estudianteId: UID })
+  });
+  const data = await res.json().catch(()=> ({}));
+  if (!res.ok) { alert('Error: ' + JSON.stringify(data)); return; }
+  alert('Postulación creada ✅');
+  window.location.href = "{% url 'postulaciones_list' %}";
+}
+
+cargarOfertas();
+</script>
+{% endblock %}

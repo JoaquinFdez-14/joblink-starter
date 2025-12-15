@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 data-aos="fade-up">Usuarios</h2>
+
+<div class="mb-2" data-aos="fade-up" data-aos-delay="40">
+  <a class="btn btn-primary" href="{% url 'usuarios_new' %}">Nuevo usuario</a>
+</div>
+
+<table class="table" id="tablaUsuarios" data-aos="fade-up" data-aos-delay="80">
+  <thead>
+    <tr>
+      <th>UID</th>
+      <th>Nombre</th>
+      <th>Rol</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const API = 'http://localhost:8080';
+
+// Nota: tu API NO tiene GET /api/usuarios (solo POST upsert y GET /api/usuarios/:id).
+// Para listar, lo más simple en esta demo es mantener un arreglo local o
+// agregar un endpoint GET /api/usuarios (recomendado). Por ahora dejamos vacío.
+document.addEventListener('DOMContentLoaded', async () => {
+  // Si decides implementar GET /api/usuarios, haz fetch aquí y pinta la tabla.
+});
+</script>
+{% endblock %}
